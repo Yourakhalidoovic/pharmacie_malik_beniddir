@@ -1,23 +1,32 @@
 import type { ColorVariant, Product, StoreStats } from "@/lib/types";
 
 const IS_STATIC_EXPORT = process.env.NEXT_STATIC_EXPORT === "true";
+const PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || "";
+const SERVER_API_BASE_URL =
+  process.env.API_BASE_URL?.trim() ||
+  PUBLIC_API_BASE_URL ||
+  "http://localhost:4000";
 
 const SERVER_FETCH_OPTIONS: RequestInit = IS_STATIC_EXPORT
   ? { cache: "force-cache" }
   : { cache: "no-store" };
 
 function resolveApiBaseUrl(): string {
-  const envBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
-  if (envBaseUrl) return envBaseUrl;
-
-  if (typeof window !== "undefined") {
-    return `${window.location.protocol}//${window.location.hostname}:4000`;
+  if (typeof window === "undefined") {
+    return SERVER_API_BASE_URL;
   }
 
-  return "http://localhost:4000";
+  if (PUBLIC_API_BASE_URL) return PUBLIC_API_BASE_URL;
+
+  if (window.location.hostname.endsWith("github.io")) {
+    return "";
+  }
+
+  return `${window.location.protocol}//${window.location.hostname}:4000`;
 }
 
 const API_BASE_URL = resolveApiBaseUrl();
+const HAS_PUBLIC_API = Boolean(API_BASE_URL);
 
 function normalizeProduct(raw: unknown): Product {
   const source = (raw && typeof raw === "object" ? raw : {}) as Record<
@@ -130,4 +139,4 @@ export async function getStats(): Promise<StoreStats> {
   return response.json();
 }
 
-export { API_BASE_URL };
+export { API_BASE_URL, HAS_PUBLIC_API };

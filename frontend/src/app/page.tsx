@@ -1,6 +1,7 @@
 import { CustomerReviews } from "@/components/customer-reviews";
 import { ProductCard } from "@/components/product-card";
 import { getFeaturedProducts, getStats } from "@/lib/api";
+import { withBasePath } from "@/lib/base-path";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -64,7 +65,7 @@ export default async function Home() {
           </div>
 
           <Image
-            src="/pharma.png"
+            src={withBasePath("/pharma.png")}
             alt="Espace parapharmacie"
             width={1200}
             height={800}

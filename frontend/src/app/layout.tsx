@@ -1,6 +1,7 @@
 import { ScrollToTopOnLoad } from "@/components/scroll-to-top-on-load";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { withBasePath } from "@/lib/base-path";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
@@ -8,6 +9,7 @@ import "./globals.css";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://pharmaciebeniddirmalik.dz";
+const socialImagePath = withBasePath("/younes.png");
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -49,7 +51,7 @@ export const metadata: Metadata = {
     siteName: "Pharmacie Beniddir Malik",
     images: [
       {
-        url: "/younes.png",
+        url: socialImagePath,
         width: 1200,
         height: 630,
         alt: "Pharmacie Beniddir Malik",
@@ -61,7 +63,7 @@ export const metadata: Metadata = {
     title: "Pharmacie Beniddir Malik | Produits parapharmaceutiques",
     description:
       "Produits parapharmaceutiques, bien-être et matériel de santé pour toute la famille.",
-    images: ["/younes.png"],
+    images: [socialImagePath],
   },
   robots: {
     index: true,

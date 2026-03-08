@@ -3,7 +3,7 @@
 import { BackToCatalogButton } from "@/components/back-to-catalog-button";
 import { PriceDisplay } from "@/components/price-display";
 import { ProductVariantPurchase } from "@/components/product-variant-purchase";
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, HAS_PUBLIC_API } from "@/lib/api";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,6 +20,14 @@ export default function ProductDetailsPage() {
     let active = true;
 
     async function loadProduct() {
+      if (!HAS_PUBLIC_API) {
+        setError(
+          "Detail indisponible en mode demo. Le backend sera active sur le VPS.",
+        );
+        setLoading(false);
+        return;
+      }
+
       if (!slug) {
         setError("Produit introuvable.");
         setLoading(false);

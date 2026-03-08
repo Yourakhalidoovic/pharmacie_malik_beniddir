@@ -2,6 +2,7 @@
 
 import { API_BASE_URL } from "@/lib/api";
 import { setAuthSession } from "@/lib/auth-storage";
+import { withBasePath } from "@/lib/base-path";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -70,7 +71,7 @@ export default function LoginPage() {
           </p>
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <Image
-              src="/younes.png"
+              src={withBasePath("/younes.png")}
               alt="Logo Pharmacie Beniddir Malik"
               width={560}
               height={260}

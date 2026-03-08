@@ -2,6 +2,7 @@
 
 import { API_BASE_URL } from "@/lib/api";
 import { getAuthSession } from "@/lib/auth-storage";
+import { withBasePath } from "@/lib/base-path";
 import Image from "next/image";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
@@ -70,7 +71,7 @@ export default function ContactPharmacyPage() {
         <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <div className="mx-auto flex w-full max-w-sm items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-3">
             <Image
-              src="/younes.png"
+              src={withBasePath("/younes.png")}
               alt="Logo Pharmacie Beniddir Malik"
               width={420}
               height={180}

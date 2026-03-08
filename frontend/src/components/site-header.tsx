@@ -5,6 +5,7 @@ import {
   getAuthChangeEventName,
   getAuthSession,
 } from "@/lib/auth-storage";
+import { withBasePath } from "@/lib/base-path";
 import { getCartChangeEventName, getCartItemsCount } from "@/lib/cart-storage";
 import type { AuthUser } from "@/lib/types";
 import Image from "next/image";
@@ -86,7 +87,7 @@ export function SiteHeader() {
         >
           <span className="inline-flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-slate-300 bg-slate-100 shadow-sm">
             <Image
-              src="/younes.png"
+              src={withBasePath("/younes.png")}
               alt="Logo Pharmacie Beniddir Malik"
               width={44}
               height={44}

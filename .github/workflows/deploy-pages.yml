@@ -47,7 +47,8 @@ jobs:
         env:
           NEXT_STATIC_EXPORT: "true"
           NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://yourakhalidoovic.github.io/pharmacie_malik_beniddir' }}
-          NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:4000' }}
+          NEXT_PUBLIC_API_BASE_URL: ${{ vars.NEXT_PUBLIC_API_BASE_URL }}
+          API_BASE_URL: "http://127.0.0.1:4000"
           NEXT_PUBLIC_BASE_PATH: ${{ vars.NEXT_PUBLIC_BASE_PATH || '/pharmacie_malik_beniddir' }}
         run: npm run build --prefix frontend
 

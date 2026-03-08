@@ -1,6 +1,6 @@
 "use client";
 
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, HAS_PUBLIC_API } from "@/lib/api";
 import type { CustomerReview } from "@/lib/types";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -10,6 +10,14 @@ export function CustomerReviews() {
   const [rating, setRating] = useState(5);
 
   const loadReviews = async () => {
+    if (!HAS_PUBLIC_API) {
+      setReviews([]);
+      setStatus(
+        "Les avis seront disponibles apres la mise en ligne du backend public.",
+      );
+      return;
+    }
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/reviews`);
       if (!response.ok) throw new Error();
@@ -26,6 +34,14 @@ export function CustomerReviews() {
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!HAS_PUBLIC_API) {
+      setStatus(
+        "Envoi indisponible en mode demo. Activez une API publique pour publier des avis.",
+      );
+      return;
+    }
+
     const form = event.currentTarget;
     setStatus("Envoi de votre avis...");
 

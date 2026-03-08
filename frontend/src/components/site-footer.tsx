@@ -1,5 +1,6 @@
 "use client";
 
+import { withBasePath } from "@/lib/base-path";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -49,7 +50,7 @@ export function SiteFooter() {
           <div className="min-w-0">
             <div className="inline-flex items-center gap-3 border-l border-white/20 pl-3">
               <Image
-                src="/younes.png"
+                src={withBasePath("/younes.png")}
                 alt="Logo Pharmacie Beniddir Malik"
                 width={30}
                 height={30}
