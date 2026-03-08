@@ -48,16 +48,15 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-4 pb-10 pt-12 md:px-5 lg:px-6">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div className="min-w-0">
-            <div className="inline-flex items-center gap-3 border-l border-white/20 pl-3">
+            <div className="inline-flex max-w-full items-center gap-3 border-l border-white/20 pl-3">
               <Image
                 src={withBasePath("/younes.png")}
                 alt="Logo Pharmacie Beniddir Malik"
-                width={30}
-                height={30}
-                style={{ width: "auto", height: "auto" }}
-                className="h-8 w-8 rounded-full object-cover"
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-full object-cover"
               />
-              <span className="text-base font-semibold">
+              <span className="min-w-0 text-base font-semibold leading-tight">
                 Pharmacie Beniddir Malik
               </span>
             </div>

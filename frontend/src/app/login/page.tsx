@@ -1,6 +1,6 @@
 "use client";
 
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, HAS_PUBLIC_API } from "@/lib/api";
 import { setAuthSession } from "@/lib/auth-storage";
 import { withBasePath } from "@/lib/base-path";
 import Image from "next/image";
@@ -18,6 +18,14 @@ export default function LoginPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (isSubmitting) return;
+
+    if (!HAS_PUBLIC_API) {
+      setIsError(true);
+      setStatus(
+        "Connexion admin indisponible en mode demo. Le backend sera active sur le VPS.",
+      );
+      return;
+    }
 
     setIsSubmitting(true);
     setIsError(false);
