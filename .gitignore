@@ -22,3 +22,6 @@ coverage/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Local reference repo (embedded git repo)
+reference/
