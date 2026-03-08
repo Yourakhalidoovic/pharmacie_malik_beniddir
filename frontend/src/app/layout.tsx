@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 
 const siteUrl =
@@ -92,10 +93,12 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ScrollToTopOnLoad />
+        <Suspense fallback={null}>
+          <ScrollToTopOnLoad />
+        </Suspense>
         <div className="min-h-screen bg-slate-50 text-slate-900">
           <SiteHeader />
-          {children}
+          <Suspense fallback={null}>{children}</Suspense>
           <SiteFooter />
         </div>
       </body>

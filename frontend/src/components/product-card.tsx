@@ -91,7 +91,7 @@ export function ProductCard({
             }
           />
           <Link
-            href={`/products/${product.slug}`}
+            href={`/products/details?slug=${encodeURIComponent(product.slug)}`}
             className={
               compact
                 ? "inline-flex w-full items-center justify-center whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold leading-none text-white transition hover:bg-slate-700"
