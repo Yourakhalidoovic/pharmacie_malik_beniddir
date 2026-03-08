@@ -1,6 +1,6 @@
 "use client";
 
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, HAS_PUBLIC_API } from "@/lib/api";
 import { getAuthSession } from "@/lib/auth-storage";
 import {
   clearCart,
@@ -50,10 +50,21 @@ export default function CartPage() {
   );
 
   useEffect(() => {
+    if (!HAS_PUBLIC_API) {
+      setProducts([]);
+      setStatus(
+        "Panier complet indisponible en mode demo. Il sera actif avec le backend VPS.",
+      );
+      return;
+    }
+
     fetch(`${API_BASE_URL}/api/products`)
       .then((res) => res.json())
       .then((data: Product[]) => setProducts(data))
-      .catch(() => setProducts([]));
+      .catch(() => {
+        setProducts([]);
+        setStatus("Impossible de charger les produits du panier.");
+      });
   }, []);
 
   const detailedItems = useMemo<ProductWithQty[]>(() => {
@@ -87,6 +98,13 @@ export default function CartPage() {
 
   async function onCheckout(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (!HAS_PUBLIC_API) {
+      setStatus(
+        "Commande indisponible en mode demo. Le backend sera active sur le VPS.",
+      );
+      return;
+    }
     const form = event.currentTarget;
 
     if (detailedItems.length === 0) {

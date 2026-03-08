@@ -1,7 +1,7 @@
 "use client";
 
 import { ProductCard } from "@/components/product-card";
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, HAS_PUBLIC_API } from "@/lib/api";
 import type { Product } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -21,6 +21,7 @@ const PARAPHARMACY_COLLECTIONS = [
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
+  const [status, setStatus] = useState("");
   const [search, setSearch] = useState(() => {
     if (typeof window === "undefined") return "";
     const query = new URLSearchParams(window.location.search);
@@ -30,10 +31,24 @@ export default function ProductsPage() {
   const [sortBy, setSortBy] = useState("latest");
 
   useEffect(() => {
+    if (!HAS_PUBLIC_API) {
+      setProducts([]);
+      setStatus(
+        "Catalogue detaille indisponible en mode demo. Il sera active avec le backend VPS.",
+      );
+      return;
+    }
+
     fetch(`${API_BASE_URL}/api/products`)
       .then((res) => res.json())
-      .then((data: Product[]) => setProducts(data))
-      .catch(() => setProducts([]));
+      .then((data: Product[]) => {
+        setProducts(data);
+        setStatus("");
+      })
+      .catch(() => {
+        setProducts([]);
+        setStatus("Impossible de charger le catalogue pour le moment.");
+      });
   }, []);
 
   useEffect(() => {
@@ -145,6 +160,12 @@ export default function ProductsPage() {
       <section className="mb-6 flex items-center justify-end text-sm text-slate-500">
         {filtered.length} produits
       </section>
+
+      {status ? (
+        <section className="mb-6 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+          {status}
+        </section>
+      ) : null}
 
       <section className="grid items-stretch gap-6 md:grid-cols-2 xl:grid-cols-3">
         {filtered.map((product) => (
