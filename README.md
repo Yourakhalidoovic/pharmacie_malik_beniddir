@@ -101,6 +101,21 @@ Après pointage DNS du domaine, activez TLS avec Certbot:
 sudo certbot --nginx -d pharmaciebeniddirmalik.dz -d www.pharmaciebeniddirmalik.dz
 ```
 
+## Déploiement VPS prêt pour MobaXterm
+
+Le kit complet est prêt ici:
+
+- `deployment/vps/README.md`
+
+Il contient:
+
+- script de packaging Windows: `deployment/vps/scripts/package-for-vps.ps1`
+- script serveur one-shot: `deployment/vps/scripts/install-or-update.sh`
+- templates systemd backend/frontend
+- template Nginx domaine VPS
+
+Objectif: dès que vous recevez l'IP/route demain, vous uploadez le package et lancez le script pour mettre le site en ligne rapidement.
+
 ## Déploiement temporaire sur GitHub Pages
 
 Le workflow GitHub Actions est prêt ici: `.github/workflows/deploy-pages.yml`.
