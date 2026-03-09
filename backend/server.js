@@ -1363,27 +1363,26 @@ app.get("/api/admin/newsletter/export", async (req, res) => {
     if (!admin) return;
 
     const rows = await all(
-      "SELECT email, source, created_at FROM newsletter_subscribers ORDER BY id DESC",
+      "SELECT email FROM newsletter_subscribers ORDER BY id DESC",
     );
 
-    const header = ["email", "source", "created_at"];
-    const lines = [header.map(toCsvSafeValue).join(",")];
+    const emailLines = rows
+      .map((row) =>
+        String(row.email || "")
+          .trim()
+          .toLowerCase(),
+      )
+      .filter(Boolean);
 
-    for (const row of rows) {
-      lines.push(
-        [row.email, row.source, row.created_at].map(toCsvSafeValue).join(","),
-      );
-    }
+    const content = emailLines.join("\n");
+    const fileName = `newsletter-emails-${new Date().toISOString().slice(0, 10)}.txt`;
 
-    const csv = lines.join("\n");
-    const fileName = `newsletter-emails-${new Date().toISOString().slice(0, 10)}.csv`;
-
-    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
     res.setHeader(
       "Content-Disposition",
       `attachment; filename=\"${fileName}\"`,
     );
-    return res.status(200).send(csv);
+    return res.status(200).send(content);
   } catch (error) {
     console.error(error);
     return res

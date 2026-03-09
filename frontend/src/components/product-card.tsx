@@ -78,7 +78,7 @@ export function ProductCard({
           className={
             compact
               ? "mt-auto flex flex-col gap-2 pt-1"
-              : "mt-auto flex items-end justify-between pt-3"
+              : "mt-auto flex flex-col gap-2 pt-3 sm:flex-row sm:items-end sm:justify-between"
           }
         >
           <PriceDisplay
@@ -87,7 +87,7 @@ export function ProductCard({
             className={
               compact
                 ? "whitespace-nowrap text-base font-bold text-slate-900"
-                : "whitespace-nowrap text-lg font-bold text-slate-900"
+                : "whitespace-nowrap text-base font-bold text-slate-900 sm:text-lg"
             }
           />
           <Link
@@ -95,7 +95,7 @@ export function ProductCard({
             className={
               compact
                 ? "inline-flex w-full items-center justify-center whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold leading-none text-white transition hover:bg-slate-700"
-                : "inline-flex min-w-[110px] shrink-0 items-center justify-center gap-2.5 whitespace-nowrap rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+                : "inline-flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-700 sm:min-w-[110px] sm:w-auto sm:px-4 sm:text-sm"
             }
           >
             {compact ? null : (

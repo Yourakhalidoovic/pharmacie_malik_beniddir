@@ -622,7 +622,7 @@ export default function AdminPage() {
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = `newsletter-emails-${new Date().toISOString().slice(0, 10)}.csv`;
+      link.download = `newsletter-emails-${new Date().toISOString().slice(0, 10)}.txt`;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -1366,7 +1366,7 @@ export default function AdminPage() {
                     onClick={onDownloadNewsletterEmails}
                     className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700"
                   >
-                    Telecharger les emails (CSV)
+                    Telecharger les emails (TXT)
                   </button>
                 </div>
               </section>
@@ -1380,8 +1380,8 @@ export default function AdminPage() {
                   value={overview.newsletterSubscribers}
                 />
                 <Card
-                  label={`CA (${currency})`}
-                  value={formatPriceFromEuro(overview.revenue, currency)}
+                  label="CA (DA)"
+                  value={formatPriceFromEuro(overview.revenue, "DZD")}
                 />
               </section>
 
