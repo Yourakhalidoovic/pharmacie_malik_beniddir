@@ -1275,6 +1275,10 @@ export default function AdminPage() {
 
   const isSuperAdmin = currentRole === "admin";
 
+  const revenueDisplayValue = formatPriceFromEuro(overview?.revenue || 0, "DZD")
+    .replace(/[\u00A0\u202F]/g, " ")
+    .trim();
+
   if (status && !hasLoadedData) {
     return (
       <main className="mx-auto max-w-4xl px-6 py-10">
@@ -1379,10 +1383,7 @@ export default function AdminPage() {
                   label="Abonnes newsletter"
                   value={overview.newsletterSubscribers}
                 />
-                <Card
-                  label="CA (DA)"
-                  value={formatPriceFromEuro(overview.revenue, "DZD")}
-                />
+                <Card label="CA (DA)" value={revenueDisplayValue} />
               </section>
 
               <section className="grid gap-4 lg:grid-cols-2">
@@ -3075,9 +3076,9 @@ function Input({
 
 function Card({ label, value }: { label: string; value: string | number }) {
   return (
-    <article className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <p className="text-xs uppercase tracking-wider text-slate-500">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-slate-900 md:break-words md:text-xl md:leading-tight lg:break-normal lg:text-2xl">
+      <p className="mt-1 overflow-hidden text-[clamp(1.15rem,1.8vw,1.9rem)] font-bold leading-tight text-slate-900 break-words whitespace-normal">
         {value}
       </p>
     </article>
