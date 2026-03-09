@@ -31,6 +31,13 @@ export type StoreStats = {
   restaurantsInAlgeria: number;
 };
 
+export type NewsletterSubscriber = {
+  id: number;
+  email: string;
+  source: string;
+  created_at: string;
+};
+
 export type CartItem = {
   productId: number;
   quantity: number;

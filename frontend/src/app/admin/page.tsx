@@ -30,6 +30,7 @@ type Overview = {
   clients: number;
   orders: number;
   revenue: number;
+  newsletterSubscribers: number;
 };
 
 const PARAPHARMACY_COLLECTIONS = [
@@ -594,6 +595,42 @@ export default function AdminPage() {
 
     setActionStatus("Avis supprimé");
     await loadData();
+  };
+
+  const onDownloadNewsletterEmails = async () => {
+    setActionStatus("Preparation du fichier newsletter...");
+    const headers = getHeaders();
+    if (!headers) {
+      setActionStatus("Session admin manquante");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/newsletter/export`,
+        {
+          headers,
+        },
+      );
+
+      if (!response.ok) {
+        setActionStatus("Export newsletter impossible");
+        return;
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `newsletter-emails-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+      setActionStatus("Export newsletter telecharge");
+    } catch {
+      setActionStatus("Erreur reseau pendant l'export newsletter");
+    }
   };
 
   const onPickImage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -1314,10 +1351,34 @@ export default function AdminPage() {
 
           {isSuperAdmin && overview && activeSection === "overview" ? (
             <>
-              <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <section className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">
+                      Newsletter marketing
+                    </p>
+                    <p className="text-sm text-slate-600">
+                      Exportez tous les emails collectes pour vos campagnes.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={onDownloadNewsletterEmails}
+                    className="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+                  >
+                    Telecharger les emails (CSV)
+                  </button>
+                </div>
+              </section>
+
+              <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 <Card label="Utilisateurs" value={overview.users} />
                 <Card label="Clients" value={overview.clients} />
                 <Card label="Commandes" value={overview.orders} />
+                <Card
+                  label="Abonnes newsletter"
+                  value={overview.newsletterSubscribers}
+                />
                 <Card
                   label={`CA (${currency})`}
                   value={formatPriceFromEuro(overview.revenue, currency)}

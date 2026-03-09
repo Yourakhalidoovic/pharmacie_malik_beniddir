@@ -1,4 +1,5 @@
 import { CustomerReviews } from "@/components/customer-reviews";
+import { NewsletterSignup } from "@/components/newsletter-signup";
 import { ProductCard } from "@/components/product-card";
 import { getFeaturedProducts, getStats } from "@/lib/api";
 import { withBasePath } from "@/lib/base-path";
@@ -110,6 +111,8 @@ export default async function Home() {
           ))}
         </div>
       </section>
+
+      <NewsletterSignup />
 
       <CustomerReviews />
     </main>

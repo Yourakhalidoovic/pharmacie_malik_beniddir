@@ -69,6 +69,18 @@ function createHttpError(statusCode, message) {
   return error;
 }
 
+function isValidEmail(value) {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase();
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
+}
+
+function toCsvSafeValue(value) {
+  const raw = String(value ?? "");
+  return `"${raw.replace(/"/g, '""')}"`;
+}
+
 function normalizeColorVariantsInput(value, fallbackStock = 0) {
   let entries = [];
 
@@ -306,6 +318,15 @@ async function initDb() {
       phone TEXT,
       subject TEXT NOT NULL,
       message TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  await run(`
+    CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      source TEXT DEFAULT 'homepage',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
@@ -919,6 +940,45 @@ app.post("/api/contact-requests", async (req, res) => {
   }
 });
 
+app.post("/api/newsletter/subscribe", async (req, res) => {
+  try {
+    const normalizedEmail = String(req.body?.email || "")
+      .trim()
+      .toLowerCase();
+    const source = String(req.body?.source || "homepage").trim() || "homepage";
+
+    if (!isValidEmail(normalizedEmail)) {
+      return res.status(400).json({ message: "Email invalide" });
+    }
+
+    const existing = await get(
+      "SELECT id FROM newsletter_subscribers WHERE lower(email) = lower(?)",
+      [normalizedEmail],
+    );
+
+    if (existing) {
+      return res.status(200).json({
+        message: "Cet email est deja inscrit a la newsletter.",
+      });
+    }
+
+    await run(
+      `
+      INSERT INTO newsletter_subscribers (email, source)
+      VALUES (?, ?)
+      `,
+      [normalizedEmail, source],
+    );
+
+    return res.status(201).json({
+      message: "Inscription newsletter enregistree.",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed to subscribe newsletter" });
+  }
+});
+
 app.post("/api/orders", async (req, res) => {
   try {
     const token = extractBearerToken(req);
@@ -1263,16 +1323,72 @@ app.get("/api/admin/overview", async (req, res) => {
     const sales = await get(
       "SELECT ROUND(COALESCE(SUM(total),0),2) as total FROM orders",
     );
+    const newsletterSubscribers = await get(
+      "SELECT COUNT(*) as count FROM newsletter_subscribers",
+    );
 
     return res.json({
       users: users.count,
       clients: clients.count,
       orders: orders.count,
       revenue: sales.total,
+      newsletterSubscribers: newsletterSubscribers.count,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Failed to fetch admin overview" });
+  }
+});
+
+app.get("/api/admin/newsletter", async (req, res) => {
+  try {
+    const admin = await requireAdminOrPharmacienUser(req, res);
+    if (!admin) return;
+
+    const rows = await all(
+      "SELECT id, email, source, created_at FROM newsletter_subscribers ORDER BY id DESC",
+    );
+    return res.json(rows);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch newsletter emails" });
+  }
+});
+
+app.get("/api/admin/newsletter/export", async (req, res) => {
+  try {
+    const admin = await requireAdminOrPharmacienUser(req, res);
+    if (!admin) return;
+
+    const rows = await all(
+      "SELECT email, source, created_at FROM newsletter_subscribers ORDER BY id DESC",
+    );
+
+    const header = ["email", "source", "created_at"];
+    const lines = [header.map(toCsvSafeValue).join(",")];
+
+    for (const row of rows) {
+      lines.push(
+        [row.email, row.source, row.created_at].map(toCsvSafeValue).join(","),
+      );
+    }
+
+    const csv = lines.join("\n");
+    const fileName = `newsletter-emails-${new Date().toISOString().slice(0, 10)}.csv`;
+
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=\"${fileName}\"`,
+    );
+    return res.status(200).send(csv);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Failed to export newsletter emails" });
   }
 });
 
