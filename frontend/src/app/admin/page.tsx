@@ -1949,9 +1949,7 @@ export default function AdminPage() {
                   />
                   <label className="space-y-1 text-sm font-medium text-slate-700">
                     <span>Catégorie</span>
-                    <input
-                      type="text"
-                      list="admin-category-options"
+                    <select
                       value={productForm.category}
                       onChange={(e) =>
                         setProductForm((s) => ({
@@ -1961,12 +1959,13 @@ export default function AdminPage() {
                       }
                       required
                       className="w-full rounded-lg border border-slate-300 px-3 py-2"
-                    />
-                    <datalist id="admin-category-options">
+                    >
                       {adminCategoryOptions.map((item) => (
-                        <option key={item} value={item} />
+                        <option key={item} value={item}>
+                          {item}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </label>
                   <label className="space-y-1 text-sm font-medium text-slate-700">
                     <span>Type / Grade</span>

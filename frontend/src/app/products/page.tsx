@@ -130,20 +130,18 @@ export default function ProductsPage() {
           className="rounded-lg border border-slate-300 px-3 py-2 outline-none ring-slate-300 focus:ring"
         />
 
-        <input
-          type="text"
-          list="category-options"
+        <select
           value={categoryInput}
           onChange={(e) => setCategoryInput(e.target.value)}
-          placeholder="Toutes les catégories"
           className="rounded-lg border border-slate-300 px-3 py-2 outline-none ring-slate-300 focus:ring"
-        />
-        <datalist id="category-options">
-          <option value="Toutes les catégories" />
+        >
+          <option value="Toutes les catégories">Toutes les catégories</option>
           {categoryOptions.map((item) => (
-            <option key={item} value={item} />
+            <option key={item} value={item}>
+              {item}
+            </option>
           ))}
-        </datalist>
+        </select>
 
         <select
           value={sortBy}
